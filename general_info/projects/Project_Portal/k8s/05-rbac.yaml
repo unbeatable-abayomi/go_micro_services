@@ -13,3 +13,13 @@ metadata:
   name: upload-service-sa
   namespace: default
 automountServiceAccountToken : false
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-gateway-sa
+  namespace: default
+automountServiceAccountToken: false
+---
