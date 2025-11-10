@@ -5,7 +5,6 @@ metadata:
   name: app-config
   namespace: default
 data:
-  JWT_SECRET: "your-secret-key"
   AUTH_SERVICE_URL: "http://auth-service:8082"
   UPLOAD_SERVICE_URL: "http://upload-service:8083"
 

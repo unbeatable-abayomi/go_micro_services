@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auth-service-sa
+  namespace: default
+automountServiceAccountToken: false
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: upload-service-sa
+  namespace: default
+automountServiceAccountToken : false
