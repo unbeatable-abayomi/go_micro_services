@@ -8,6 +8,16 @@ data:
   JWT_SECRET: "your-secret-key"
   AUTH_SERVICE_URL: "http://auth-service:8082"
   UPLOAD_SERVICE_URL: "http://upload-service:8083"
+
+---
+# jwt-secret-stringdata.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+type: Opaque
+stringData:
+  JWT_SECRET: "your-secret-key"
 ---
 # Persistent Volume for uploads
 apiVersion: v1
