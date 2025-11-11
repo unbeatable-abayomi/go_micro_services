@@ -45,3 +45,15 @@ rules:
   resources: ["pods"]
   verbs: ["create", "list",]
 ---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: api-pod-creator
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create", "list",]
+
+---
