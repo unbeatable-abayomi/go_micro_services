@@ -23,3 +23,15 @@ metadata:
   namespace: default
 automountServiceAccountToken: false
 ---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: auth-pod-creator
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["create", "list",]
+
+---
