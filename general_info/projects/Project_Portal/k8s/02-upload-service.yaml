@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: upload-service
-        image: daasnigeria/daasrepo:upload-service
+        #image: daasnigeria/daasrepo:upload-service
+        image: igwubor/project_portal-upload-service:v1.2.3
         imagePullPolicy: Always  # Pull from registry
         ports:
         - containerPort: 8083
