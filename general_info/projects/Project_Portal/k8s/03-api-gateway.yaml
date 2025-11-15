@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: daasnigeria/daasrepo:api-gateway
+        #image: daasnigeria/daasrepo:api-gateway
+        image: igwubor/project_portal-api-gateway:v1.2.3
         imagePullPolicy: Always  # Pull from registry
         ports:
         - containerPort: 8081
