@@ -20,7 +20,7 @@ spec:
       - name: auth-service
         #image: daasnigeria/daasrepo:auth-service
         image: igwubor/project_portal-auth-service:v1.2.3
-        imagePullPolicy: Always  # Pull from registry
+        imagePullPolicy: IfNotPresent  # Pull from registry
         ports:
         - containerPort: 8082
         env:
