@@ -15,6 +15,11 @@ spec:
       labels:
         app: auth-service
     spec:
+          # --- POD-LEVEL SECURITY CONTEXT ---
+      # This configuration is required to meet the 'restricted' PSS
+      securityContext:
+        # 1. Force all containers to run as non-root
+        runAsNonRoot: true
       serviceAccountName: auth-service-sa
       containers:
       - name: auth-service
