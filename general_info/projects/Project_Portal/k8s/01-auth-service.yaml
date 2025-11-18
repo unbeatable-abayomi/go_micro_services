@@ -15,17 +15,39 @@ spec:
       labels:
         app: auth-service
     spec:
-          # --- POD-LEVEL SECURITY CONTEXT ---
+      # --- POD-LEVEL SECURITY CONTEXT ---
       # This configuration is required to meet the 'restricted' PSS
       securityContext:
         # 1. Force all containers to run as non-root
         runAsNonRoot: true
+        # 2. Define the user ID. 1001 is a common non-root choice.
+        runAsUser: 1001
+        # 3. Define the group ID.
+        runAsGroup: 1001
+        # 4. Make volumes writable by this group
+        fsGroup: 1001
+        # 5. This is required by the 'restricted' PSS
+        #    It enables the default, secure seccomp profile
+        #    to block dangerous system calls.
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: auth-service-sa
       containers:
       - name: auth-service
-        #image: daasnigeria/daasrepo:auth-service
         image: igwubor/project_portal-auth-service:v1.2.3
+        #image: daasnigeria/daasrepo:auth-service
         imagePullPolicy: IfNotPresent  # Pull from registry
+        # --- CONTAINER-LEVEL SECURITY CONTEXT ---
+        # These settings lock down the container
+        securityContext:
+          # 1. The container's root filesystem is read-only
+          readOnlyRootFilesystem: true
+          # 2. Prevent the container from gaining root privileges
+          allowPrivilegeEscalation: false
+          # 3. Drop all Linux capabilities...
+          capabilities:
+            drop:
+            - ALL
         ports:
         - containerPort: 8082
         env:
@@ -34,6 +56,8 @@ spec:
         envFrom:
         - configMapRef:
             name: app-config
+        - secretRef:
+            name: app-secret
         resources:
           limits:
             memory: "128Mi"
