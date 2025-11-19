@@ -66,7 +66,7 @@ spec:
   - protocol: TCP
     port: 8081
     targetPort: 8081
-  type: LoadBalancer  # External access
+  type: NodePort  # External access
 ---
 # Ingress for external access (optional)
 apiVersion: networking.k8s.io/v1
