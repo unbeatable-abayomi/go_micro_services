@@ -29,8 +29,7 @@ spec:
         # 5. This is required by the 'restricted' PSS
         #    It enables the default, secure seccomp profile
         #    to block dangerous system calls.
-        seccompProfile:
-          type: RuntimeDefault
+
       serviceAccountName: upload-service-sa
       containers:
       - name: upload-service
