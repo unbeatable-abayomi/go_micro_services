@@ -15,8 +15,6 @@ spec:
       labels:
         app: upload-service
     spec:
-
-
       serviceAccountName: upload-service-sa
       containers:
       - name: upload-service
