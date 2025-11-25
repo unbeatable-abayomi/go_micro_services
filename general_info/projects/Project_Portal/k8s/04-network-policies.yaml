@@ -9,7 +9,7 @@ spec:
       app: auth-service
   policyTypes:
   - Ingress
-  - Egress
+  #- Egress
   ingress:
   - from:
     - podSelector:
