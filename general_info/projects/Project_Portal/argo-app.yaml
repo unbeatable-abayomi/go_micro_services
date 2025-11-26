@@ -6,8 +6,8 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/unbeatable-abayomi/go_micro_services.git'
-    targetRevision: main
-    path: ./my-app
+    targetRevision: dev
+    path: ./general_info/projects/Project_Portal/k8s
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: yomi-namespace
