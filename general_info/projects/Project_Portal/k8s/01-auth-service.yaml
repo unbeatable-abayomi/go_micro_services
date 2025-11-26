@@ -2,11 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: agrocd-sync
   name: auth-service
   labels:
     app: auth-service
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "1"
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   selector:
@@ -82,9 +83,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: agrocd-sync
   name: auth-service
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "2"
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   selector:
     app: auth-service

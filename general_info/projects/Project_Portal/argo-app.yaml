@@ -1,27 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: new-application
+  name: new-application-new
   namespace: argocd
 spec:
   destination:
-    namespace: default
-    server: https://kubernetes.default.svc
-    #namespace: yomi-namespace
-  # syncPolicy:
-  #   automated:
-  #     enabled: false
-  #   syncOptions:
-  #     - CreateNamespace=true   
+    name: in-cluster
+    #namespace: default
+    #server: https://kubernetes.default.svc
+    namespace: agrocd-sync
   project: default
   source:
+    path: general_info/projects/Project_Portal/k8s
+    repoURL: https://github.com/unbeatable-abayomi/go_micro_services.git
+    targetRevision: main
     directory:
       exclude: '{*.sh,README.md}'
       include: '*.yaml'
       recurse: true
-    path: general_info/projects/Project_Portal/k8s
-    repoURL: https://github.com/unbeatable-abayomi/go_micro_services.git
-    targetRevision: main
+  syncPolicy:
+    automated:
+      enabled: false
+    syncOptions:
+      - CreateNamespace=true   
+
 
 
 # apiVersion: argoproj.io/v1alpha1

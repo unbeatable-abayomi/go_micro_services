@@ -3,9 +3,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: default
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "0"
+  namespace: agrocd-sync
+  annotations:
+     argocd.argoproj.io/sync-wave: "0"
 data:
   AUTH_SERVICE_URL: "http://auth-service:8082"
   UPLOAD_SERVICE_URL: "http://upload-service:8083"
@@ -16,9 +16,9 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: app-secret
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "0"  
-  
+  namespace: agrocd-sync
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"  
 type: Opaque
 stringData:
   JWT_SECRET: "your-secret-key"
@@ -28,8 +28,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: uploads-pv
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "0"
+  namespace: agrocd-sync
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   capacity:
     storage: 2Gi
@@ -43,8 +44,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: uploads-pvc
-  # annotations:
-  #   argocd.argoproj.io/sync-wave: "0"
+  namespace: agrocd-sync
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   accessModes:
     - ReadWriteOnce
