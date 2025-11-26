@@ -2,9 +2,9 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: auth-service-sa
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken: false
 
 ---
@@ -13,9 +13,9 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: upload-service-sa
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken : false
 
 ---
@@ -24,19 +24,19 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: api-gateway-sa
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken: false
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: default
+  namespace: default
   name: auth-pod-creator
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -46,10 +46,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: default
+  namespace: default
   name: upload-pod-creator
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -59,10 +59,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: default
+  namespace: default
   name: api-pod-creator
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 rules:
 - apiGroups: [""]
   resources: ["pods"]
@@ -74,15 +74,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: auth-create-pods-binding
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-  #namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
+  namespace: default
 subjects:
 - kind: ServiceAccount
   name: auth-service-sa
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-  #namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
+  namespace: default
 roleRef:
   kind: Role
   name: auth-pod-creator
@@ -92,15 +92,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: upload-create-pods-binding
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 subjects:
 - kind: ServiceAccount
   name: upload-service-sa
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 roleRef:
   kind: Role
   name: upload-pod-creator
@@ -110,15 +110,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: api-create-pods-binding
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 subjects:
 - kind: ServiceAccount
   name: api-gateway-sa
-  #namespace: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  namespace: default
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 roleRef:
   kind: Role
   name: api-pod-creator

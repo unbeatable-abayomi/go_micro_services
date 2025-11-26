@@ -5,8 +5,8 @@ metadata:
   name: upload-service
   labels:
     app: upload-service
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 1
   selector:
@@ -62,8 +62,8 @@ kind: Service
 metadata:
   name: upload-service
 
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "2"
 spec:
   selector:
     app: upload-service

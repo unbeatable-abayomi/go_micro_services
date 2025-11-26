@@ -1,21 +1,51 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-application
+  name: application-directory
+  namespace: argocd
 spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+    #namespace: yomi-namespace
+  # syncPolicy:
+  #   automated:
+  #     enabled: false
+  #   syncOptions:
+  #     - CreateNamespace=true   
   project: default
   source:
-    repoURL: 'https://github.com/unbeatable-abayomi/go_micro_services.git'
-    targetRevision: dev
-    path: ./general_info/projects/Project_Portal/k8s
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: yomi-namespace
-  syncPolicy:
-    automated:
-      enabled: false
-    syncOptions:
-      - CreateNamespace=true   
+    directory:
+      exclude: '{*.sh,README.md}'
+      include: '*.yaml'
+      recurse: true
+    path: general_info/projects/Project_Portal/k8s
+    repoURL: https://github.com/unbeatable-abayomi/go_micro_services.git
+    targetRevision: main
+
+
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: my-application
+# spec:
+#   project: default
+#   source:
+#     directory:
+#       exclude: '{*.sh,README.md}'
+#       include: '*.yaml'
+#       recurse: true
+#     repoURL: 'https://github.com/unbeatable-abayomi/go_micro_services.git'
+#     targetRevision: dev
+#     path: general_info/projects/Project_Portal/k8s
+#   destination:
+#     server: 'https://kubernetes.default.svc'
+#     namespace: yomi-namespace
+#   syncPolicy:
+#     automated:
+#       enabled: false
+#     syncOptions:
+#       - CreateNamespace=true   
     
 
 ---
