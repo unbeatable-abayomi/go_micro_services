@@ -80,8 +80,8 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: auth-service-sa
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
   namespace: agrocd-sync
 roleRef:
   kind: Role
@@ -99,8 +99,8 @@ subjects:
 - kind: ServiceAccount
   name: upload-service-sa
   namespace: agrocd-sync
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 roleRef:
   kind: Role
   name: upload-pod-creator
@@ -117,8 +117,8 @@ subjects:
 - kind: ServiceAccount
   name: api-gateway-sa
   namespace: agrocd-sync
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "0"
 roleRef:
   kind: Role
   name: api-pod-creator
