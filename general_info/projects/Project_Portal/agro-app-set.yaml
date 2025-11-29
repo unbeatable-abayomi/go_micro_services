@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: project-portal-prs
+  namespace: argocd
+spec:
+  # 1. GENERATOR CONFIGURATION
+  generators:
+  - pullRequest:
+      github:
+        # Your GitHub Username
+        owner: unbeatable-abayomi
+        # Your Repository Name
+        repo: go_micro_services
+        # Token is required for API Rate Limiting (even for public repos)
+        tokenRef:
+          secretName: github-token
+          key: token
+      requeueAfterSeconds: 60
+
+  # 2. TEMPLATE CONFIGURATION
+  template:
+    metadata:
+      # Creates apps named 'portal-pr-1', 'portal-pr-2', etc.
+      name: 'portal-pr-{{number}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/unbeatable-abayomi/go_micro_services.git'
+        # This ensures we pull the specific commit from the PR
+        targetRevision: '{{head_sha}}'
+        # The specific path to your K8s manifests
+        path: general_info/projects/Project_Portal/k8s
+        
+        # Since you are using plain YAMLs (no Helm), we don't have a 'helm' block.
+        # ArgoCD will recursively apply all .yaml files in that folder.
+            
+      destination:
+        server: https://kubernetes.default.svc
+        # Deploys into a new namespace named after the PR (e.g., portal-pr-5)
+        namespace: 'portal-pr-{{number}}'
+      
+      syncPolicy:
+        automated:
+          prune: true      # Deletes the app when PR is closed
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true # Automatically creates the 'portal-pr-N' namespace
