@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: pizza-party-parent
+  name: app-apps-parent
   namespace: argocd
 spec:
   project: default
