@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pizza-frontend
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io # Deletes resources when app is deleted
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_USERNAME/pizza-party.git
+    targetRevision: main
+    path: manifests/frontend  # <--- Pointing to the actual code
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pizza-party    # <--- Deploy into this namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true    # <--- Create 'pizza-party' ns if missing
