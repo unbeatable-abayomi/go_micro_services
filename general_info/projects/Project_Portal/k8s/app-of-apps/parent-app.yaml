@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pizza-party-parent
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_USERNAME/pizza-party.git
+    # ---------------------------------------------------------
+    # THIS is where you target the branch for the PARENT APP
+    targetRevision: main   # Change this to 'infra-test' if you want!
+    # ---------------------------------------------------------
+    path: apps/  # <--- Look at the "Card Catalog" folder
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd # Parent apps usually live in the argocd namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
