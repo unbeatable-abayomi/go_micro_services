@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-app
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io # Deletes resources when app is deleted
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/unbeatable-abayomi/go_micro_services.git
+    targetRevision: feat/appOfapps 
+    path: general_info/projects/Project_Portal/k8s/api  # <--- Pointing to the actual code
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app-of-apps-test    # <--- Deploy into this namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true    # <--- Create 'pizza-party' ns if missing

@@ -1,22 +1,22 @@
-# Auth Service Deployment
+# API Gateway Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: agrocd-sync
-  name: auth-service
-  labels:
-    app: auth-service
+  namespace: app-of-apps-test
+  name: api-gateway
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"  
+  labels:
+    app: api-gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth-service
+      app: api-gateway
   template:
     metadata:
       labels:
-        app: auth-service
+        app: api-gateway
     spec:
       # --- POD-LEVEL SECURITY CONTEXT ---
       # This configuration is required to meet the 'restricted' PSS
@@ -34,11 +34,11 @@ spec:
         #    to block dangerous system calls.
         seccompProfile:
           type: RuntimeDefault
-      serviceAccountName: auth-service-sa
+      serviceAccountName: api-gateway-sa
       containers:
-      - name: auth-service
-        image: igwubor/project_portal-auth-service:v1.2.3
-        #image: daasnigeria/daasrepo:auth-service
+      - name: api-gateway
+        image: igwubor/project_portal-api-gateway:v1.2.3
+        #image: daasnigeria/daasrepo:api-gateway
         imagePullPolicy: IfNotPresent  # Pull from registry
         # --- CONTAINER-LEVEL SECURITY CONTEXT ---
         # These settings lock down the container
@@ -52,7 +52,7 @@ spec:
             drop:
             - ALL
         ports:
-        - containerPort: 8082
+        - containerPort: 8081
         env:
         - name: GIN_MODE
           value: "release"
@@ -69,29 +69,53 @@ spec:
             memory: "64Mi"
             cpu: "50m"
         livenessProbe:
-          tcpSocket:
-            port: 8082
+          httpGet:
+            path: /
+            port: 8081
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
-          tcpSocket:
-            port: 8082
+          httpGet:
+            path: /
+            port: 8081
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
-# Auth Service Service
+# API Gateway Service
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: agrocd-sync
-  name: auth-service
+  namespace: app-of-apps-test 
+  name: api-gateway
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
   selector:
-    app: auth-service
+    app: api-gateway
   ports:
   - protocol: TCP
-    port: 8082
-    targetPort: 8082
-  type: ClusterIP
+    port: 8081
+    targetPort: 8081
+  type: NodePort  # External access
+---
+# Ingress for external access (optional)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: app-of-apps-test 
+  name: api-gateway-ingress
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: image-upload.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 8081
