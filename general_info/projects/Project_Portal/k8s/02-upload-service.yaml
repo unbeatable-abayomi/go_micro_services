@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: agrocd-sync
+  #namespace: agrocd-sync
   name: upload-service
   labels:
     app: upload-service
@@ -61,7 +61,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: upload-service
+  #name: upload-service
   namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "2"
