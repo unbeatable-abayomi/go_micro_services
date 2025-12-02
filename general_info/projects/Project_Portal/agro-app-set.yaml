@@ -31,6 +31,8 @@ spec:
         targetRevision: '{{head_sha}}'
         # The specific path to your K8s manifests
         path: general_info/projects/Project_Portal/k8s
+        directory:
+          recurse: true
         
         # Since you are using plain YAMLs (no Helm), we don't have a 'helm' block.
         # ArgoCD will recursively apply all .yaml files in that folder.

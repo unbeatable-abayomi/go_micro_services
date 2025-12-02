@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: agrocd-sync
+  # namespace: agrocd-sync
   name: auth-service
   labels:
     app: auth-service
@@ -83,7 +83,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: agrocd-sync
+  # namespace: agrocd-sync
   name: auth-service
   annotations:
     argocd.argoproj.io/sync-wave: "2"
