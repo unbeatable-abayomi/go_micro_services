@@ -52,20 +52,7 @@ spec:
 
 
 #**File:** `manifests/frontend/service.yaml`
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-svc
-  # Wave 0: Create networking first
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
-spec:
-  selector:
-    app: frontend
-  ports:
-  - port: 80
-    targetPort: 80
+
 
 
 ---
