@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: auth-service-sa
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken: false
@@ -13,7 +13,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: upload-service-sa
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken : false
@@ -24,7 +24,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: api-gateway-sa
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 automountServiceAccountToken: false
@@ -33,7 +33,7 @@ automountServiceAccountToken: false
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   name: auth-pod-creator
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -46,7 +46,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   name: upload-pod-creator
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -59,7 +59,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   name: api-pod-creator
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -76,7 +76,7 @@ metadata:
   name: auth-create-pods-binding
   annotations:
     argocd.argoproj.io/sync-wave: "0"
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
 subjects:
 - kind: ServiceAccount
   name: auth-service-sa
@@ -92,7 +92,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: upload-create-pods-binding
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 subjects:
@@ -110,13 +110,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: api-create-pods-binding
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 subjects:
 - kind: ServiceAccount
   name: api-gateway-sa
-  #namespace: agrocd-sync
+  namespace: agrocd-sync
   # annotations:
   #   argocd.argoproj.io/sync-wave: "0"
 roleRef:
