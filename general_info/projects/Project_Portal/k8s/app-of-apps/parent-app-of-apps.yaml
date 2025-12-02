@@ -9,7 +9,7 @@ spec:
     repoURL: https://github.com/unbeatable-abayomi/go_micro_services.git
     # ---------------------------------------------------------
     # THIS is where you target the branch for the PARENT APP
-    targetRevision: feat/appOfapps   # Change this to 'infra-test' if you want!
+    targetRevision: feat/appOfapps   
     # ---------------------------------------------------------
     path: general_info/projects/Project_Portal/k8s/apps  # <--- Look at the "Card Catalog" folder
   destination:

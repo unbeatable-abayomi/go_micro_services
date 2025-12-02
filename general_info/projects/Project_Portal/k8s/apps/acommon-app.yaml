@@ -19,4 +19,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true    # <--- Create 'pizza-party' ns if missing
+    - CreateNamespace=true    # <--- Create 'app-of-apps-test' ns if missing
