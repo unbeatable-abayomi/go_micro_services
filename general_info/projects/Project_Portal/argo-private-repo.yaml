@@ -10,9 +10,9 @@ stringData:
   type: git
   url: https://github.com/daasnigeria.git
   #username: unbeatable-abayomi
-  #password: "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"
+  #password: ""
   username: msna-iabayomi
-  password: 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
+  password: ""
 
 ---
 apiVersion: v1
