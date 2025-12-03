@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  project: default
+  # 1. SOURCE: Where is the code?
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: guestbook
+  
+  # 2. DESTINATION: Where should it go?
+  destination:
+    # This points to the same cluster ArgoCD is running in
+    server: https://161.35.47.194:6443
+    namespace: guestbook
+
+  # 3. SYNC POLICY: Automate the deployment
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true 
