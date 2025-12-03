@@ -12,7 +12,7 @@ stringData:
   #username: unbeatable-abayomi
   #password: ""
   username: msna-iabayomi
-  password: ""
+  password: "new tokwen"
 
 ---
 apiVersion: v1
