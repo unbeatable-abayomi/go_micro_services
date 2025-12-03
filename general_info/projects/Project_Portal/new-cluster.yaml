@@ -20,7 +20,9 @@ spec:
   # 3. SYNC POLICY: Automate the deployment
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      enabled: false
+    # automated:
+    #   prune: true
+    #   selfHeal: true
     syncOptions:
     - CreateNamespace=true 
