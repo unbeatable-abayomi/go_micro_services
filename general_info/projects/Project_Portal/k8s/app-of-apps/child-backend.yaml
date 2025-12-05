@@ -13,7 +13,7 @@ spec:
     path: manifests/backend   # <--- Pointing to backend code
   destination:
     server: https://kubernetes.default.svc
-    namespace: pizza-party
+    namespace: intra-test
   syncPolicy:
     automated:
       prune: true

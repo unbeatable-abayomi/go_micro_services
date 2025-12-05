@@ -19,4 +19,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true    # <--- Create 'pizza-party' ns if missing
+    - CreateNamespace=true    # <--- Create 'intra-test' ns if missing
