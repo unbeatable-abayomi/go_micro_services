@@ -13,7 +13,7 @@ spec:
     path: manifests/frontend  # <--- Pointing to the actual code
   destination:
     server: https://kubernetes.default.svc
-    namespace: pizza-party    # <--- Deploy into this namespace
+    namespace: intra-test  # <--- Deploy into this namespace
   syncPolicy:
     automated:
       prune: true
