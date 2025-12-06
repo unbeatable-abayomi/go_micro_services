@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prod-security-netpol
+spec:
+  # 1. Target: Apply this policy to pods with label 'env: production'
+  podSelector:
+    matchLabels:
+      env: production
+
+  # 2. Define Policy Types: We are controlling both Ingress and Egress
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # 3. Ingress Rules: Allow traffic ONLY from pods with label 'env: security'
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          env: security
+
+  # 4. Egress Rules: Allow traffic ONLY to the specific IP 8.8.8.8
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 8.8.8.8/32
+
+---
+
