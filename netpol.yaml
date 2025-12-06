@@ -28,3 +28,24 @@ spec:
 
 ---
 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-traffic
+  namespace: default  # Change this to the namespace you want to open up
+spec:
+  # 1. Select ALL pods in this namespace (Empty selector = Wildcard)
+  podSelector: {}
+
+  # 2. Apply to both incoming and outgoing traffic
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # 3. Allow ALL Ingress (Empty rule list item = Allow everything)
+  ingress:
+  - {}
+
+  # 4. Allow ALL Egress (Empty rule list item = Allow everything)
+  egress:
+  - {}
