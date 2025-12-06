@@ -49,3 +49,21 @@ spec:
   # 4. Allow ALL Egress (Empty rule list item = Allow everything)
   egress:
   - {}
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: default
+spec:
+  # 1. Select ALL pods in this namespace
+  podSelector: {}
+
+  # 2. Apply to both traffic directions
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # 3. By OMITTING the 'ingress' and 'egress' sections below,
+  #    we tell Kubernetes: "Enforce the policy type, but allow NOTHING."
