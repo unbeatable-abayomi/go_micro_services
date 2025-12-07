@@ -90,4 +90,23 @@ spec:
 ---
 
 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress
+  namespace: default
+spec:
+  # 1. Select ALL pods in this namespace
+  podSelector: {}
+
+  # 2. Apply ONLY to outgoing traffic
+  policyTypes:
+  - Egress
+
+  # 3. By OMITTING the 'egress' section below,
+  #    we tell Kubernetes: "Enforce Egress policy, but allow NOTHING."
+  #    (Ingress is unrestricted because it is not listed in policyTypes)
+
+
+---
 
