@@ -68,21 +68,3 @@ spec:
   # 3. By OMITTING the 'ingress' and 'egress' sections below,
   #    we tell Kubernetes: "Enforce the policy type, but allow NOTHING."
 
----
-
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-ingress
-  namespace: default
-spec:
-  # 1. Select ALL pods in this namespace
-  podSelector: {}
-
-  # 2. Apply ONLY to incoming traffic
-  policyTypes:
-  - Ingress
-
-  # 3. By OMITTING the 'ingress' section below,
-  #    we tell Kubernetes: "Enforce Ingress policy, but allow NOTHING."
-  #    (Egress is unrestricted because it is not listed in policyTypes)
