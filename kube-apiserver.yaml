@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+spec:
+  # 1. Critical: Use the Host's IP stack so 127.0.0.1 matches the host
+  hostNetwork: true
+  priorityClassName: system-node-critical
+  containers:
+  - name: kube-apiserver
+    # 2. CHANGE THIS TAG to match your binary version (e.g., v1.28.0, v1.30.0)
+    image: registry.k8s.io/kube-apiserver:v1.30.0
+    imagePullPolicy: IfNotPresent
+    command:
+    - kube-apiserver
+    - --advertise-address=138.68.188.154
+    - --etcd-cafile=/root/certificates/ca.crt
+    - --etcd-certfile=/root/certificates/api-etcd.crt
+    - --etcd-keyfile=/root/certificates/api-etcd.key
+    - --etcd-servers=https://127.0.0.1:2379
+    - --service-account-key-file=/root/certificates/service-account.crt
+    - --service-cluster-ip-range=10.0.0.0/24
+    - --service-account-signing-key-file=/root/certificates/service-account.key
+    - --service-account-issuer=https://127.0.0.1:6443
+    - --tls-cert-file=/root/certificates/kube-api.crt
+    - --tls-private-key-file=/root/certificates/kube-api.key
+    - --client-ca-file=/root/certificates/ca.crt
+    - --authorization-mode=RBAC
+    - --encryption-provider-config=/var/lib/kubernetes/encryption-at-rest.yaml
+    - --audit-policy-file=/root/certificates/logging.yaml
+    - --audit-log-path=/var/log/api-audit.log
+    - --audit-log-maxage=30
+    - --audit-log-maxbackup=10
+    - --audit-log-maxsize=100
+    
+    # 3. Mounts: Mapping Host files into the Container
+    volumeMounts:
+    - mountPath: /root/certificates
+      name: k8s-certs
+      readOnly: true
+    - mountPath: /var/lib/kubernetes
+      name: k8s-config
+      readOnly: true
+    - mountPath: /var/log
+      name: log-dir
+    
+    # Basic Health Checks
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 138.68.188.154
+        path: /livez
+        port: 6443
+        scheme: HTTPS
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        host: 138.68.188.154
+        path: /readyz
+        port: 6443
+        scheme: HTTPS
+      periodSeconds: 1
+      timeoutSeconds: 15
+      
+  # 4. Volumes: Where the files actually live on the Node
+  volumes:
+  - hostPath:
+      path: /root/certificates
+      type: DirectoryOrCreate
+    name: k8s-certs
+  - hostPath:
+      path: /var/lib/kubernetes
+      type: DirectoryOrCreate
+    name: k8s-config
+  - hostPath:
+      path: /var/log
+      type: DirectoryOrCreate
+    name: log-dir
+
+
+---
+# root@ubuntu-s-1vcpu-2gb-lon1-01:~# cat /etc/systemd/system/kube-apiserver.service
+# [Unit]
+# Description=Kubernetes API Server
+# Documentation=https://github.com/kubernetes/kubernetes
+
+# [Service]
+# ExecStart=/usr/local/bin/kube-apiserver --advertise-address=138.68.188.154 --etcd-cafile=/root/certificates/ca.crt --etcd-certfile=/root/certificates/api-etcd.crt --etcd-keyfile=/root/certificates/api-etcd.key --etcd-servers=https://127.0.0.1:2379 --service-account-key-file=/root/certificates/service-account.crt --service-cluster-ip-range=10.0.0.0/24 --service-account-signing-key-file=/root/certificates/service-account.key --service-account-issuer=https://127.0.0.1:6443 --tls-cert-file=/root/certificates/kube-api.crt --tls-private-key-file=/root/certificates/kube-api.key --client-ca-file /root/certificates/ca.crt --authorization-mode=RBAC --encryption-provider-config=/var/lib/kubernetes/encryption-at-rest.yaml --audit-policy-file=/root/certificates/logging.yaml --audit-log-path=/var/log/api-audit.log --audit-log-maxage=30  --audit-log-maxbackup=10  --audit-log-maxsize=100 
+
+# [Install]
+# WantedBy=multi-user.target
+
