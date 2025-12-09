@@ -1,0 +1,150 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: suspicious-deny-all
+  namespace: default
+spec:
+  # 1. Select ONLY the suspicious pods
+  podSelector:
+    matchLabels:
+      role: suspicious
+
+  # 2. Apply to both traffic directions
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # 3. No 'ingress' or 'egress' sections means DENY ALL.
+  #    The pod is now completely isolated (Quarantined).
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-allow-app
+  namespace: default
+spec:
+  # 1. Target: Apply this policy to pods with label 'role: database'
+  podSelector:
+    matchLabels:
+      role: database
+
+  # 2. Define Policy Types: We are controlling Ingress (Incoming)
+  policyTypes:
+  - Ingress
+
+  # 3. Ingress Rules: Allow traffic ONLY from pods with label 'role: app'
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: app
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: production-allow-security
+  namespace: production
+spec:
+  # 1. Target: Apply this policy to ALL pods in the 'production' namespace
+  podSelector: {}
+
+  # 2. Define Policy Types: We are controlling Ingress (Incoming)
+  policyTypes:
+  - Ingress
+
+  # 3. Ingress Rules: Allow traffic from ANY pod in the 'security' namespace
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          # This standard label is automatically on namespaces in K8s >= 1.21
+          kubernetes.io/metadata.name: security
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: production-policy
+  namespace: production
+spec:
+  # 1. Target: Apply this policy to ALL pods in the 'production' namespace
+  podSelector: {}
+
+  # 2. Define Policy Types: We are controlling Ingress AND Egress
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # 3. Ingress Rules: Allow traffic from ANY pod in the 'security' namespace
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          # This standard label is automatically on namespaces in K8s >= 1.21
+          kubernetes.io/metadata.name: security
+
+  # 4. Egress Rules: Allow traffic ONLY to the specific IP 8.8.8.8
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 8.8.8.8/32
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-cidr-allow
+  namespace: default
+spec:
+  # 1. Target: Apply this policy to pods with label 'role: database'
+  podSelector:
+    matchLabels:
+      role: database
+
+  # 2. Define Policy Types: We are controlling Ingress (Incoming)
+  policyTypes:
+  - Ingress
+
+  # 3. Ingress Rules: Allow traffic from IP range 172.17.0.0/16
+  #    BUT exclude the specific range 172.17.1.0/24
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-egress-allow
+  namespace: default
+spec:
+  # 1. Target: Apply this policy to pods with label 'role: db'
+  podSelector:
+    matchLabels:
+      role: db
+
+  # 2. Define Policy Types: We are controlling Egress (Outgoing)
+  policyTypes:
+  - Egress
+
+  # 3. Egress Rules: Allow traffic to CIDR 172.17.0.0/16
+  #    BUT only on TCP ports 32000 through 32768
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+    ports:
+    - protocol: TCP
+      port: 32000
+      endPort: 32768
