@@ -110,3 +110,46 @@ rules:
 
 ---
 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jane-read-secrets
+  # This limits the scope to the 'dev' namespace
+  namespace: dev 
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # referencing the GLOBAL ClusterRole
+  kind: ClusterRole 
+  name: global-secret-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: standard-read-only # <--- The reusable name
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+--- 
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: john-ro
+  namespace: prod # <--- Applied to PROD
+subjects:
+- kind: User
+  name: john
+roleRef:
+  kind: ClusterRole
+  name: standard-read-only # <--- Points to the SAME Master Template
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
