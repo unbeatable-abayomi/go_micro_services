@@ -97,3 +97,16 @@ spec:
 # [Install]
 # WantedBy=multi-user.target
 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # No namespace here!
+  name: global-secret-reader
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+
+---
+
