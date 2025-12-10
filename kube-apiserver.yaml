@@ -153,3 +153,17 @@ roleRef:
 
 ---
 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jane-ro
+  namespace: dev # <--- Applied to DEV
+subjects:
+- kind: User
+  name: jane
+roleRef:
+  kind: ClusterRole
+  name: standard-read-only # <--- Points to Master Template
+  apiGroup: rbac.authorization.k8s.io
+
+---
