@@ -168,12 +168,12 @@ roleRef:
 
 ---
 
-# apiVersion: storage.k8s.io/v1
-# kind: StorageClass
-# metadata:
-#   name: gp2
-#   annotations:
-#     storageclass.kubernetes.io/is-default-class: "false"
-# provisioner: k8s.io/minikube-hostpath
-# reclaimPolicy: Delete
-# volumeBindingMode: Immediate
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
