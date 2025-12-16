@@ -1,0 +1,150 @@
+apiVersion: apps/v1
+kind: Deployment  # <--- CHANGED back to Deployment
+metadata:
+  name: otel-collector
+  namespace: default
+  labels:
+    app: otel-collector
+spec:
+  replicas: 1       # <--- Added Replicas
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      # 1. Privileged is still required on EKS to read host logs
+      containers:
+      - name: otel-collector
+        image: otel/opentelemetry-collector-contrib:latest
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        
+        command:
+        - /otelcol-contrib
+        - --config=/conf/otel-collector-config.yaml
+        
+        ports:
+        - containerPort: 4317
+          name: otlp-grpc
+        - containerPort: 4318
+          name: otlp-http
+        - containerPort: 13133
+          name: health
+        
+        volumeMounts:
+        - name: otel-collector-config
+          mountPath: /conf
+        - name: varlogpods
+          mountPath: /var/log/pods
+          readOnly: true
+        # REMOVED: varlibdocker (Doesn't exist on EKS containerd nodes)
+        # REMOVED: etcpasswd (Usually not needed on Amazon Linux nodes)
+
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 13133
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 13133
+          initialDelaySeconds: 60
+          periodSeconds: 5
+
+      volumes:
+      - name: otel-collector-config
+        configMap:
+          name: otel-collector-config
+          items:
+          - key: otel-collector-config.yaml
+            path: otel-collector-config.yaml
+      - name: varlogpods
+        hostPath:
+          path: /var/log/pods
+      # REMOVED: varlibdocker
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: default
+data:
+  otel-collector-config.yaml: |
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+    
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+      filelog:
+        include:
+          - /var/log/pods/*/*/*.log
+        exclude:
+          - /var/log/pods/*_otel-collector_*/*/*.log
+        start_at: end
+        include_file_path: true
+        include_file_name: false
+        operators:
+          - type: json_parser
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+
+    processors:
+      batch:
+        timeout: 10s
+        send_batch_size: 1024
+      
+      resource:
+        attributes:
+          # 3. CHANGED: Update tags for EKS
+          - key: deployment.environment
+            value: "production-eks"  # <--- Update this!
+            action: upsert
+          - key: k8s.cluster.name
+            value: "my-aws-cluster"  # <--- Update this!
+            action: upsert
+
+    exporters:
+      datadog/exporter:
+        api:
+          site: "datadoghq.com"
+          key: 83de8afbc538553e63cb59b54b368671
+        traces:
+          span_name_as_resource_name: true
+        logs:
+          endpoint: https://http-intake.logs.datadoghq.com
+
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch, resource]
+          exporters: [datadog/exporter]
+        logs:
+          receivers: [filelog]
+          processors: [resource, batch]
+          exporters: [datadog/exporter]
