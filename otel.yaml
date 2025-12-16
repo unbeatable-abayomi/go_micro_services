@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment  # <--- CHANGED back to Deployment
+kind: Deployment  
 metadata:
   name: otel-collector
   namespace: default
@@ -41,8 +41,7 @@ spec:
         - name: varlogpods
           mountPath: /var/log/pods
           readOnly: true
-        # REMOVED: varlibdocker (Doesn't exist on EKS containerd nodes)
-        # REMOVED: etcpasswd (Usually not needed on Amazon Linux nodes)
+
 
         resources:
           requests:
@@ -75,7 +74,6 @@ spec:
       - name: varlogpods
         hostPath:
           path: /var/log/pods
-      # REMOVED: varlibdocker
 
 ---
 
