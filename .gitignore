@@ -1,3 +1,31 @@
 *-secret.yaml
 *-private-repo.yaml
 noshow/
+
+# Local .terraform directories (plugins and modules)
+**/.terraform/*
+
+# .tfstate files (CRITICAL: Never commit these to public repos)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files which likely contain secrets/keys
+*.tfvars
+*.tfvars.json
+
+# Ignore override files used for local adjustments
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore the lock file if you don't want to lock provider versions (optional, usually good to keep)
+# .terraform.lock.hcl
