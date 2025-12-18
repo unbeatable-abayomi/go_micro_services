@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-eks-cluster
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: my-eks-prod
+  # 1. PASTE YOUR AWS EKS URL HERE
+  server: "https://4D19F0560EB60669709BCE6C8AD1392B.gr7.us-east-1.eks.amazonaws.com"
+  config: |
+    {
+      
+      "bearerToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjI3SHUtZmJxaDZidEtKcjZqNzFKRUVIbmdiajIzZnNqdDc1MzVLOHM4dGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhcmdvY2QtbWFuYWdlci10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJhcmdvY2QtbWFuYWdlciIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjZiNGRkZjBhLTU3MGEtNGNmZS05N2U1LWJlNjczZjA2OTk3MiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTphcmdvY2QtbWFuYWdlciJ9.bIcoWMOqGIgcZws28tAaYv7blrDHgtsQZ20fa8gftwgJV_rFwZCjH5ww3nY1yZy1Esyu-WQuWbphux-oHmVVyYqEy4uf4mHS0GNgzI8Z_5fRrLbST8P25RIjybDErQRglYl0I6Mxxwgtnoe-wGaThekgm3TsJBUIm7LFU15xoRsTPADnRhLFPC4piVkiDtv3ClJX0hI6IHLqQrUG9Xn0jQI43eVqTngSK4I55GFIYERH9-PVxXar-_qItqptOnyx6KbdEoOZw961Nsr--K6WI2x-vjqLMmGaU4IuSqtShACx2R5rrCZ0dXJS5jwnaySrpmErJxttM8Njql5he-gYPQ",
+      "tlsClientConfig": {
+        "insecure": false
+      }
+    }
+
+---
+
+# 1. Create the ServiceAccount
+kubectl create sa argocd-manager -n kube-system
+
+# 2. Give it Admin permissions
+kubectl create clusterrolebinding argocd-manager-role \
+  --clusterrole=cluster-admin \
+  --serviceaccount=kube-system:argocd-manager
+
+# 3. Create the Token Secret (Required for K8s 1.24+)
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-manager-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: argocd-manager
+type: kubernetes.io/service-account-token
+EOF
+
+kubectl -n kube-system get secret argocd-manager-token -o jsonpath="{.data.token}" | base64 -d
+# COPY THIS LONG STRING
+
+kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'
+# COPY THIS URL (e.g., https://A1B2C3...gr7.us-east-1.eks.amazonaws.com)
