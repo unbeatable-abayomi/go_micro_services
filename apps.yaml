@@ -51,14 +51,20 @@ spec:
             name: loan-validator-portal-service
             port:
               number: 8080
-      - path: /api
+      - path: /api/customer
         pathType: Prefix
         backend:
           service:
             name: government-api-service
             port:
               number: 8081
-
+      - path: /api/customers
+        pathType: Prefix
+        backend:
+          service:
+            name: government-api-service
+            port:
+              number: 8081
 
 
 ---
