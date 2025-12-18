@@ -1,0 +1,95 @@
+#
+# kubectl get svc ingress-nginx-controller -n ingress-nginx
+# kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.3/cert-manager.yaml
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # 1. The Let's Encrypt Production Server
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # 2. Your Email (Required for expiry warnings)
+    email: igwubor@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    # 3. Use HTTP-01 Solver (Nginx will handle the proof)
+    - http01:
+        ingress:
+          class: nginx
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  # ---------------------------------------------------------
+  # ✅ THIS MUST MATCH WHERE YOUR APP PODS/SERVICES ARE
+  namespace: default 
+  # ---------------------------------------------------------
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - www.kubemasters.online
+    secretName: my-app-tls-cert 
+
+  rules:
+  - host: www.kubemasters.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: loan-validator-portal-service
+            port:
+              number: 8080
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: government-api-service
+            port:
+              number: 8081
+
+
+
+---
+#kubectl apply -f https://github.com/kyverno/kyverno/releases/latest/download/install.yaml
+
+#kubectl apply --server-side -f https://github.com/kyverno/kyverno/releases/latest/download/install.yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: allow-only-approved-images
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: allow-approved-images
+      match:
+        resources:
+          kinds:
+            - Pod
+      exclude:
+        resources:
+          namespaces:
+            - kube-system
+            - kyverno
+      validate:
+        message: "Only approved container images are allowed in this cluster"
+        pattern:
+          spec:
+            containers:
+              - image: >-
+                  daasnigeria/daasrepo:* |
+                  postgres:15-alpine |
+                  otel/opentelemetry-collector-contrib:* |
+                  registry.k8s.io/ingress-nginx/controller*
