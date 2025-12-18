@@ -148,3 +148,8 @@ spec:
     - protocol: TCP
       port: 32000
       endPort: 32768
+
+
+#kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/tigera-operator.yaml
+
+#kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/custom-resources.yaml
