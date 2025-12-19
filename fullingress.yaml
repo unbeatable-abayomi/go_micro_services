@@ -761,6 +761,52 @@ spec:
     app.kubernetes.io/name: ingress-nginx
   
   type: LoadBalancer
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  # ---------------------------------------------------------
+  # ✅ THIS MUST MATCH WHERE YOUR APP PODS/SERVICES ARE
+  namespace: default 
+  # ---------------------------------------------------------
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - www.kubemasters.online
+    secretName: my-app-tls-cert 
+
+  rules:
+  - host: www.kubemasters.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: loan-validator-portal-service
+            port:
+              number: 8080
+      - path: /api/customer
+        pathType: Prefix
+        backend:
+          service:
+            name: government-api-service
+            port:
+              number: 8081
+      - path: /api/customers
+        pathType: Prefix
+        backend:
+          service:
+            name: government-api-service
+            port:
+              number: 8081
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress
 # metadata:
