@@ -799,14 +799,14 @@ spec:
           service:
             name: government-api-service
             port:
-              number: 8081
+              number: 8082
       - path: /api/customers
         pathType: Prefix
         backend:
           service:
             name: government-api-service
             port:
-              number: 8081  #this worked because of the new port mapping in the Service above
+              number: 8082  #this worked because of the new port mapping in the Service above
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress
 # metadata:
