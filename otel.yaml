@@ -192,4 +192,4 @@ spec:
     app.kubernetes.io/name: ingress-nginx
   
   # 4. CHANGE THIS FROM NodePort TO LoadBalancer
-  type: LoadBalancer
+  type: LoadBalancer # Could also be 'LoadBalancer' depending on your setup, Cloud Provider, etc.
