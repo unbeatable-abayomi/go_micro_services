@@ -27,6 +27,7 @@ module "eks" {
 
   cluster_endpoint_public_access_cidrs = [
   "102.88.111.48/32"
+  # or 0.0.0.0/0 from anywhere
 ]
 
   # [FIX] LOGGING: Enable Control Plane Logging to CloudWatch
