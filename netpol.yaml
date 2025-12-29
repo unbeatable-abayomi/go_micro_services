@@ -7,6 +7,7 @@ spec:
   podSelector:
     matchLabels:
       env: production
+      environment: production
 
   # 2. Define Policy Types: We are controlling both Ingress and Egress
   policyTypes:
