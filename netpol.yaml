@@ -111,3 +111,4 @@ spec:
 
 ---
 
+kubectl taint nodes node01 team=team-a:NoSchedule-
