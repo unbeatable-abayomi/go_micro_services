@@ -113,6 +113,3 @@ spec:
 kubectl taint nodes node01 team=team-a:NoSchedule
 kubectl taint nodes node01 team=team-a:NoSchedule-
 LABEL A POD
-k label pod backend run=good
-UNLABEL A POD
-k label pod backend run-
