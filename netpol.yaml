@@ -138,3 +138,29 @@ spec:
         - ports:
             - port: "9055"
               protocol: TCP
+
+---
+
+
+apiVersion: 'cilium.io/v2'
+kind: CiliumNetworkPolicy
+metadata:
+   name: test
+   
+spec:
+    endpointSelector:
+        matchLabels:
+              app: yomi
+              
+     ingress:
+      - fromEndpoints:
+          - matchLabels:
+                run: fe
+                
+                
+     egress: 
+        - toEndpoints:
+            - matchLabels:
+                  run: be
+                  
+                  
