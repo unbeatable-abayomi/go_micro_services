@@ -143,4 +143,10 @@ spec:
 
 
 
-                  
+- rule: Custom Rule 1
+  desc: Detects any container access to files or directories with prefix /etc/kubernetes
+  condition: >
+    container.id != host and
+    fd.name startswith /etc/kubernetes
+  output: "custom_rule_1 file=%fd.name container=%container.id"
+  priority: WARNING      
