@@ -110,36 +110,7 @@ spec:
 
 
 ---
-apiVersion: "cilium.io/v2"
-kind: CiliumNetworkPolicy
-metadata:
-  name: default
-  namespace: metadata-access
-spec:
-  endpointSelector:
-    matchLabels: {}
-  
-  # ALLOW section
-  egress:
-    - toCIDRSet:
-        - cidr: 0.0.0.0/0  # Allow the whole world (including .21)
-    - toEndpoints:
-        - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": metadata-access
-    - toEndpoints:
-        - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": kube-system
 
-  # DENY section (Takes precedence)
-  egressDeny:
-    - toCIDRSet:
-        - cidr: 192.168.100.21/32
-      toPorts:
-        - ports:
-            - port: "9055"
-              protocol: TCP
-
----
 
 
 
