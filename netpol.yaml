@@ -148,13 +148,3 @@ spec:
   priority: WARNING
 
   ---
-- rule: Custom Rule 2
-  desc: Detects any container making network connections to IP 192.168.100.21 on port 9055
-  condition: >
-    container.id != host and
-    net.dip == 192.168.100.21 and
-    net.dport == 9055
-  output: "custom_rule_2 dip=%net.dip dport=%net.dport container=%container.id"
-  priority: WARNING
-
-  ---
