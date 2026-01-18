@@ -139,3 +139,19 @@ spec:
             - port: "9055"
               protocol: TCP
 ---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gateway-v1
+  namespace: team-ivy-gateway
+spec:
+  podSelector:
+    matchLabels:
+      id: gateway-v1
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: team-ivy-private
