@@ -1,0 +1,83 @@
+# k -n team-ivy-private get networkpolicy api-private-access -oyaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-private-access
+  namespace: team-ivy-private
+  resourceVersion: "54292"
+
+spec:
+  ingress:
+  - from:                                  ### ingress rule 1
+    - namespaceSelector: {}                # from any Namespace
+      podSelector:
+        matchLabels:
+          api-access-cache: "true"         # from Pods with certain labels
+    ports:
+    - port: 2000                           # to port 2000
+      protocol: TCP
+  - from:                                  ### ingress rule 2
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          api-access-operation: "true"
+    ports:
+    - port: 3000
+      protocol: TCP
+  - from:                                  ### ingress rule 3
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          api-access-status: "true"
+    ports:
+    - port: 4000
+      protocol: TCP
+  - from:                                  ### ingress rule 4
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          api-access-report: "true"
+    ports:
+    - port: 5000
+      protocol: TCP
+  - from:                                  ### ingress rule 5
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          api-access-reset: "true"
+    ports:
+    - port: 6000
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      id: api-private                      # this policy controls these Pods
+  policyTypes:
+  - Ingress   
+
+---
+
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-allow
+  namespace: team-iris
+spec:
+  endpointSelector:
+    matchLabels: {}             # Apply this policy to all Pods in Namespace team-iris 
+  egress:
+  - toEndpoints:
+    - {}                        # ALLOW egress to all Pods in Namespace team-iris
+  - toEndpoints:              
+      - matchLabels:
+          io.kubernetes.pod.namespace: kube-system
+          k8s-app: kube-dns
+    toPorts:
+      - ports:
+          - port: "53"
+            protocol: UDP
+        rules:
+          dns:
+            - matchPattern: "*"
+  ingress:
+  - fromEndpoints:              # ALLOW ingress from all Pods in Namespace team-iris
+    - {}
