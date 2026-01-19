@@ -4,8 +4,6 @@ kind: NetworkPolicy
 metadata:
   name: api-private-access
   namespace: team-ivy-private
-  resourceVersion: "54292"
-
 spec:
   ingress:
   - from:                                  ### ingress rule 1
