@@ -172,3 +172,38 @@ spec:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: team-ivy-private
+
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host-memory-accessor
+  labels:
+    app: security-test
+spec:
+  containers:
+  - name: alpine
+    image: alpine
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        while true; do
+          # Frequency: Attempting access every 1 second
+          # head -c 1 ensures we just 'touch' the file without reading 
+          # massive amounts of data into the container logs
+          cat /mnt/host-dev/mem | head -c 1 > /dev/null 2>&1
+          sleep 1
+        done
+    securityContext:
+      privileged: true  # Necessary for accessing device nodes
+    volumeMounts:
+    - name: host-device
+      mountPath: /mnt/host-dev
+  volumes:
+  - name: host-device
+    hostPath:
+      path: /dev
+      type: Directory
+  
