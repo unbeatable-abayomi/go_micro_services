@@ -207,3 +207,18 @@ spec:
       path: /dev
       type: Directory
   
+
+---
+
+
+
+- list: mem_file
+  items: [/mnt/host-dev/mem]
+
+- rule: devmem
+  desc: "Detects access to host memory"
+  condition: fd.name in (mem_file)
+  output: ALERT (container_id=%container.id pod=%k8s.pod.name)
+  priority: CRITICAL
+  tags: [file]
+  
