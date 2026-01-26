@@ -225,3 +225,7 @@ spec:
 
 ---
   falco -M 30 -r  /etc/falco/falco_rules.local.yaml > yomi.yaml
+
+---
+
+  trivy image -s CRITICAL,HIGH amazonlinux:1 | grep Total
