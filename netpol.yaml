@@ -222,3 +222,6 @@ spec:
   priority: CRITICAL
   tags: [file]
   
+
+---
+  falco -M 30 -r  /etc/falco/falco_rules.local.yaml > yomi.yaml
