@@ -224,7 +224,7 @@ spec:
   
 
 ---
-  falco -M 30 -r  /etc/falco/falco_rules.local.yaml > yomi.yaml
+  
 
 ---
 
