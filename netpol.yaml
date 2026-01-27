@@ -228,4 +228,4 @@ spec:
 
 ---
 
-  trivy image -s CRITICAL,HIGH amazonlinux:1 | grep Total
+ 
